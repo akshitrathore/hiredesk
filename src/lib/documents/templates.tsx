@@ -1,0 +1,263 @@
+import {
+  Document,
+  Page,
+  StyleSheet,
+  Text,
+  View,
+} from "@react-pdf/renderer";
+
+export type OfferDocumentInput = {
+  candidateName: string;
+  roleTitle: string;
+  currency: string;
+  salaryAmount: string;
+  startDate: string;
+  reportingManager: string;
+  location: string;
+  generatedDate: string;
+};
+
+const styles = StyleSheet.create({
+  page: {
+    padding: 48,
+    fontFamily: "Helvetica",
+    color: "#171615",
+    fontSize: 10,
+    lineHeight: 1.6,
+  },
+  header: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#d8d3ca",
+    paddingBottom: 16,
+    marginBottom: 28,
+  },
+  brand: {
+    fontSize: 20,
+    fontFamily: "Helvetica-Bold",
+    letterSpacing: 0.5,
+  },
+  subBrand: {
+    marginTop: 4,
+    color: "#6f6a63",
+    fontSize: 9,
+  },
+  title: {
+    fontSize: 18,
+    fontFamily: "Helvetica-Bold",
+    marginBottom: 18,
+  },
+  paragraph: {
+    marginBottom: 12,
+  },
+  detailGrid: {
+    borderWidth: 1,
+    borderColor: "#d8d3ca",
+    marginVertical: 18,
+  },
+  detailRow: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#d8d3ca",
+  },
+  detailRowLast: {
+    flexDirection: "row",
+  },
+  detailLabel: {
+    width: "35%",
+    padding: 9,
+    backgroundColor: "#f6f5f2",
+    color: "#6f6a63",
+    fontFamily: "Helvetica-Bold",
+  },
+  detailValue: {
+    width: "65%",
+    padding: 9,
+  },
+  sectionTitle: {
+    fontFamily: "Helvetica-Bold",
+    marginTop: 10,
+    marginBottom: 6,
+  },
+  signatureGrid: {
+    flexDirection: "row",
+    gap: 28,
+    marginTop: 42,
+  },
+  signatureBlock: {
+    flex: 1,
+  },
+  signatureLine: {
+    borderTopWidth: 1,
+    borderTopColor: "#171615",
+    paddingTop: 8,
+    marginTop: 36,
+  },
+  footer: {
+    position: "absolute",
+    left: 48,
+    right: 48,
+    bottom: 32,
+    borderTopWidth: 1,
+    borderTopColor: "#d8d3ca",
+    paddingTop: 10,
+    color: "#6f6a63",
+    fontSize: 8,
+  },
+});
+
+function Header() {
+  return (
+    <View style={styles.header}>
+      <Text style={styles.brand}>ROVE</Text>
+      <Text style={styles.subBrand}>People Operations | ROVE Hire</Text>
+    </View>
+  );
+}
+
+function DetailRow({
+  label,
+  value,
+  last = false,
+}: {
+  label: string;
+  value: string;
+  last?: boolean;
+}) {
+  return (
+    <View style={last ? styles.detailRowLast : styles.detailRow}>
+      <Text style={styles.detailLabel}>{label}</Text>
+      <Text style={styles.detailValue}>{value}</Text>
+    </View>
+  );
+}
+
+export function OfferLetterDocument({
+  input,
+}: {
+  input: OfferDocumentInput;
+}) {
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <Header />
+        <Text style={styles.title}>Offer Letter</Text>
+        <Text style={styles.paragraph}>Date: {input.generatedDate}</Text>
+        <Text style={styles.paragraph}>Dear {input.candidateName},</Text>
+        <Text style={styles.paragraph}>
+          We are pleased to offer you the position of {input.roleTitle} at ROVE.
+          Your experience, judgment, and ownership stood out throughout the
+          hiring process, and we are excited about the impact you can make with
+          the team.
+        </Text>
+
+        <View style={styles.detailGrid}>
+          <DetailRow label="Candidate" value={input.candidateName} />
+          <DetailRow label="Role" value={input.roleTitle} />
+          <DetailRow
+            label="Salary"
+            value={`${input.currency} ${input.salaryAmount}`}
+          />
+          <DetailRow label="Start Date" value={input.startDate} />
+          <DetailRow label="Reporting Manager" value={input.reportingManager} />
+          <DetailRow label="Location" value={input.location} last />
+        </View>
+
+        <Text style={styles.sectionTitle}>Role Summary</Text>
+        <Text style={styles.paragraph}>
+          In this role, you will work closely with your manager and cross-
+          functional partners to deliver high-quality outcomes, communicate
+          clearly, and help strengthen ROVE&apos;s operating cadence.
+        </Text>
+
+        <Text style={styles.sectionTitle}>Employment Terms</Text>
+        <Text style={styles.paragraph}>
+          This offer is subject to standard onboarding checks, completion of
+          joining documentation, and adherence to ROVE policies. Your employment
+          terms will be governed by the final employment agreement issued by the
+          People Operations team.
+        </Text>
+
+        <Text style={styles.paragraph}>
+          We look forward to welcoming you to ROVE.
+        </Text>
+
+        <View style={styles.signatureGrid}>
+          <View style={styles.signatureBlock}>
+            <Text style={styles.signatureLine}>ROVE People Operations</Text>
+            <Text>Authorized Signatory</Text>
+          </View>
+          <View style={styles.signatureBlock}>
+            <Text style={styles.signatureLine}>{input.candidateName}</Text>
+            <Text>Candidate Acknowledgement</Text>
+          </View>
+        </View>
+
+        <Text style={styles.footer}>
+          This document is generated by ROVE Hire for internal hiring operations.
+        </Text>
+      </Page>
+    </Document>
+  );
+}
+
+export function NdaDocument({ input }: { input: OfferDocumentInput }) {
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <Header />
+        <Text style={styles.title}>Non-Disclosure Agreement</Text>
+        <Text style={styles.paragraph}>Date: {input.generatedDate}</Text>
+        <Text style={styles.paragraph}>
+          This Non-Disclosure Agreement is entered into between ROVE and{" "}
+          {input.candidateName} in connection with employment discussions and
+          onboarding for the {input.roleTitle} role.
+        </Text>
+
+        <Text style={styles.sectionTitle}>Confidential Information</Text>
+        <Text style={styles.paragraph}>
+          Confidential Information includes non-public business plans, product
+          information, customer data, financial information, technical materials,
+          hiring information, operating processes, and any other information
+          shared by ROVE that a reasonable person would understand to be
+          confidential.
+        </Text>
+
+        <Text style={styles.sectionTitle}>Confidentiality Obligation</Text>
+        <Text style={styles.paragraph}>
+          {input.candidateName} agrees to protect Confidential Information with
+          reasonable care, use it only for authorized ROVE purposes, and not
+          disclose it to any third party without written permission from ROVE.
+        </Text>
+
+        <Text style={styles.sectionTitle}>Return of Materials</Text>
+        <Text style={styles.paragraph}>
+          Upon request, {input.candidateName} will return or delete ROVE
+          materials containing Confidential Information, including copies,
+          extracts, notes, and derivative materials.
+        </Text>
+
+        <Text style={styles.sectionTitle}>Acknowledgement</Text>
+        <Text style={styles.paragraph}>
+          This template is intended for hiring operations and is not a substitute
+          for legal review. It records the parties&apos; mutual expectation of
+          confidentiality during onboarding.
+        </Text>
+
+        <View style={styles.signatureGrid}>
+          <View style={styles.signatureBlock}>
+            <Text style={styles.signatureLine}>{input.candidateName}</Text>
+            <Text>Candidate Signature</Text>
+          </View>
+          <View style={styles.signatureBlock}>
+            <Text style={styles.signatureLine}>ROVE Representative</Text>
+            <Text>Authorized Signatory</Text>
+          </View>
+        </View>
+
+        <Text style={styles.footer}>
+          ROVE Confidential | Generated by ROVE Hire on {input.generatedDate}
+        </Text>
+      </Page>
+    </Document>
+  );
+}

@@ -59,12 +59,21 @@ assignment production-like without adding unnecessary infrastructure.
 
 ## Milestone 5 Status
 
-- HR can schedule Screening or Technical intercaviews from a candidate profile.
+- HR can schedule Screening or Technical interviews from a candidate profile.
 - Scheduling an interview moves the candidate to `Interview Scheduled`.
 - Interviews appear on the candidate profile and the `/interviews` page.
 - HR can mark interviews as completed with Hire, No Hire, or Maybe feedback.
 - Feedback is shown on the candidate profile.
 - Candidate profile now shows timeline events ordered most recent first.
+
+## Milestone 6 Status
+
+- HR can generate Offer Letter and NDA PDFs from a candidate profile.
+- Offer generation is available from `Interview Scheduled` or `Offer Sent`.
+- Generated PDFs are persisted in Supabase Storage under the `documents` bucket.
+- Document records are stored in Postgres and re-downloadable from the profile.
+- Offer generation moves the candidate to `Offer Sent`.
+- Offer generation is logged in the candidate timeline.
 
 ## Environment
 

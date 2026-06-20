@@ -3,6 +3,7 @@ import {
   CompleteInterviewForm,
   ScheduleInterviewForm,
 } from "@/app/candidates/[id]/interview-forms";
+import { OfferDocumentForm } from "@/app/candidates/[id]/offer-form";
 import { AppShell } from "@/components/app-shell";
 import { StatusBadge } from "@/components/status-badge";
 import { formatDate, formatDateTime } from "@/lib/format";
@@ -43,6 +44,14 @@ type TimelineEvent = {
   created_at: string;
 };
 
+type CandidateDocument = {
+  id: string;
+  type: "Offer Letter" | "NDA";
+  file_name: string;
+  created_at: string;
+  downloadUrl: string | null;
+};
+
 export default async function CandidateProfilePage({
   params,
 }: {
@@ -52,6 +61,7 @@ export default async function CandidateProfilePage({
   let candidate: CandidateProfile | null = null;
   let interviews: Interview[] = [];
   let timelineEvents: TimelineEvent[] = [];
+  let documents: CandidateDocument[] = [];
   let error: string | null = null;
 
   try {
@@ -60,6 +70,7 @@ export default async function CandidateProfilePage({
       { data, error: queryError },
       { data: interviewRows, error: interviewsError },
       { data: timelineRows, error: timelineError },
+      { data: documentRows, error: documentsError },
     ] = await Promise.all([
       supabase
         .from("candidates")
@@ -80,6 +91,11 @@ export default async function CandidateProfilePage({
         .select("id,title,description,created_at")
         .eq("candidate_id", id)
         .order("created_at", { ascending: false }),
+      supabase
+        .from("documents")
+        .select("id,type,file_path,file_name,created_at")
+        .eq("candidate_id", id)
+        .order("created_at", { ascending: false }),
     ]);
 
     if (queryError) {
@@ -88,6 +104,8 @@ export default async function CandidateProfilePage({
       error = interviewsError.message;
     } else if (timelineError) {
       error = timelineError.message;
+    } else if (documentsError) {
+      error = documentsError.message;
     } else if (data) {
       let resumeUrl: string | null = null;
 
@@ -115,6 +133,21 @@ export default async function CandidateProfilePage({
       };
       interviews = interviewRows ?? [];
       timelineEvents = timelineRows ?? [];
+      documents = await Promise.all(
+        (documentRows ?? []).map(async (document) => {
+          const { data: signedUrl } = await supabase.storage
+            .from("documents")
+            .createSignedUrl(document.file_path, 60);
+
+          return {
+            id: document.id,
+            type: document.type,
+            file_name: document.file_name,
+            created_at: document.created_at,
+            downloadUrl: signedUrl?.signedUrl ?? null,
+          };
+        }),
+      );
     }
   } catch {
     error = "Supabase is not configured yet.";
@@ -127,6 +160,8 @@ export default async function CandidateProfilePage({
     (interview) => interview.status === "Scheduled",
   );
   const schedulingDisabled = isTerminal || hasPendingInterview;
+  const canGenerateOffer =
+    candidate?.status === "Interview Scheduled" || candidate?.status === "Offer Sent";
 
   return (
     <AppShell>
@@ -303,6 +338,50 @@ export default async function CandidateProfilePage({
                     ))}
                   </div>
                 )}
+              </section>
+
+              <section className="rounded-lg border border-line bg-panel p-5">
+                <div className="mb-4">
+                  <h2 className="text-lg font-semibold">Offer documents</h2>
+                  <p className="mt-1 text-sm text-muted">
+                    Generate a professional offer letter and NDA after interview
+                    scheduling begins.
+                  </p>
+                </div>
+                {!canGenerateOffer ? (
+                  <p className="mb-4 rounded-md border border-line bg-background px-3 py-2 text-sm text-muted">
+                    Offer documents become available once an interview has been
+                    scheduled.
+                  </p>
+                ) : null}
+                <OfferDocumentForm
+                  candidateId={id}
+                  defaultRoleTitle={candidate.jobTitle}
+                  disabled={!canGenerateOffer || isTerminal}
+                />
+
+                {documents.length > 0 ? (
+                  <div className="mt-5 space-y-2">
+                    <p className="text-sm font-semibold">Generated files</p>
+                    {documents.map((document) => (
+                      <a
+                        className="flex items-center justify-between rounded-md border border-line bg-background px-3 py-2 text-sm transition hover:border-foreground"
+                        href={document.downloadUrl ?? "#"}
+                        key={document.id}
+                      >
+                        <span>
+                          <span className="block font-medium">
+                            {document.type}
+                          </span>
+                          <span className="block text-xs text-muted">
+                            {formatDateTime(document.created_at)}
+                          </span>
+                        </span>
+                        <span className="text-muted">Download</span>
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
               </section>
             </div>
 
