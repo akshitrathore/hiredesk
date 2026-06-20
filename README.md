@@ -35,6 +35,17 @@ assignment production-like without adding unnecessary infrastructure.
 - Sign-out action added.
 - App shell now reflects the authenticated HR user when a session exists.
 
+## Milestone 3 Status
+
+- Job openings can be created and persisted to Supabase.
+- Job openings can be edited, including changing status between Open and Closed.
+- Jobs list reads from Supabase and shows status, required skill tags, created
+  date, and candidate count.
+- Dashboard reads persisted candidates and jobs from Supabase.
+- Dashboard status filtering and name/role search are wired through query params.
+- Dashboard summary cards now reflect persisted candidate/interview data.
+- Candidate row clicks route to a connected profile placeholder.
+
 ## Environment
 
 Copy `.env.example` to `.env.local` and provide:
