@@ -4,40 +4,67 @@ import { StatusBadge } from "@/components/status-badge";
 import { formatDate } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 
+type CandidateProfile = {
+  name: string;
+  email: string;
+  phone: string | null;
+  current_location: string | null;
+  current_position: string | null;
+  notice_period: string | null;
+  salary_expectation: string | null;
+  linkedin_url: string | null;
+  resume_file_name: string | null;
+  status: string;
+  last_activity_at: string;
+  jobTitle: string;
+  resumeUrl: string | null;
+};
+
 export default async function CandidateProfilePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  let candidate:
-    | {
-        name: string;
-        email: string;
-        status: string;
-        last_activity_at: string;
-        jobTitle: string;
-      }
-    | null = null;
+  let candidate: CandidateProfile | null = null;
   let error: string | null = null;
 
   try {
     const supabase = await createClient();
     const { data, error: queryError } = await supabase
       .from("candidates")
-      .select("name,email,status,last_activity_at,jobs(title)")
+      .select(
+        "name,email,phone,current_location,current_position,notice_period,salary_expectation,linkedin_url,resume_file_path,resume_file_name,status,last_activity_at,jobs(title)",
+      )
       .eq("id", id)
       .single();
 
     if (queryError) {
       error = queryError.message;
     } else if (data) {
+      let resumeUrl: string | null = null;
+
+      if (data.resume_file_path) {
+        const { data: signedUrl } = await supabase.storage
+          .from("resumes")
+          .createSignedUrl(data.resume_file_path, 60);
+        resumeUrl = signedUrl?.signedUrl ?? null;
+      }
+
       candidate = {
         name: data.name,
         email: data.email,
+        phone: data.phone,
+        current_location: data.current_location,
+        current_position: data.current_position,
+        notice_period: data.notice_period,
+        salary_expectation: data.salary_expectation,
+        linkedin_url: data.linkedin_url,
+        resume_file_name: data.resume_file_name,
         status: data.status,
         last_activity_at: data.last_activity_at,
         jobTitle: data.jobs?.title ?? "Unassigned role",
+        resumeUrl,
       };
     }
   } catch {
@@ -80,13 +107,61 @@ export default async function CandidateProfilePage({
             <StatusBadge status={candidate.status} />
           </div>
 
-          <div className="mt-8 rounded-md border border-line bg-background p-4">
-            <p className="text-sm font-semibold">Profile milestone coming next</p>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-              The candidate profile route is connected so dashboard rows have a
-              destination. The full timeline, resume, actions, interviews, and
-              documents will be built in the profile milestone.
-            </p>
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            <div className="rounded-md border border-line bg-background p-4">
+              <p className="text-sm font-semibold">Basic info</p>
+              <dl className="mt-4 space-y-3 text-sm">
+                <div>
+                  <dt className="text-muted">Phone</dt>
+                  <dd>{candidate.phone ?? "Not submitted"}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted">Location</dt>
+                  <dd>{candidate.current_location ?? "Not submitted"}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted">Current role</dt>
+                  <dd>{candidate.current_position ?? "Not submitted"}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted">Notice period</dt>
+                  <dd>{candidate.notice_period ?? "Not submitted"}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted">Salary expectation</dt>
+                  <dd>{candidate.salary_expectation ?? "Not submitted"}</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div className="rounded-md border border-line bg-background p-4">
+              <p className="text-sm font-semibold">Files and links</p>
+              <div className="mt-4 space-y-3 text-sm">
+                {candidate.resumeUrl ? (
+                  <a
+                    className="block rounded-md border border-line bg-panel px-3 py-2 font-medium transition hover:border-foreground"
+                    href={candidate.resumeUrl}
+                  >
+                    Download {candidate.resume_file_name ?? "resume"}
+                  </a>
+                ) : (
+                  <p className="text-muted">No resume available.</p>
+                )}
+
+                {candidate.linkedin_url ? (
+                  <a
+                    className="block rounded-md border border-line bg-panel px-3 py-2 font-medium transition hover:border-foreground"
+                    href={candidate.linkedin_url}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    View LinkedIn profile
+                  </a>
+                ) : (
+                  <p className="text-muted">LinkedIn not submitted.</p>
+                )}
+              </div>
+            </div>
           </div>
 
           <p className="mt-5 text-xs text-muted">

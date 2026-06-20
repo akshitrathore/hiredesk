@@ -46,6 +46,17 @@ assignment production-like without adding unnecessary infrastructure.
 - Dashboard summary cards now reflect persisted candidate/interview data.
 - Candidate row clicks route to a connected profile placeholder.
 
+## Milestone 4 Status
+
+- HR can add candidates to open job openings.
+- Resume PDF upload is validated and persisted in Supabase Storage.
+- Closed openings are excluded from candidate intake.
+- Candidate records are created in `Applied` status.
+- One-time magic links are generated, hashed in storage, and shown for copying.
+- Public `/apply/[token]` pages handle valid, invalid, expired, and used links.
+- Candidate form submission moves status to `Form Submitted`.
+- Candidate profile shows resume download and submitted application details.
+
 ## Environment
 
 Copy `.env.example` to `.env.local` and provide:
@@ -54,6 +65,7 @@ Copy `.env.example` to `.env.local` and provide:
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 Without these values, the app shell can render, but Supabase-backed auth and data
