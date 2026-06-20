@@ -9,6 +9,10 @@ type InterviewState = {
 };
 
 const terminalStatuses = new Set(["Hired", "Rejected"]);
+const interviewSchedulingStatuses = new Set([
+  "Form Submitted",
+  "Interview Scheduled",
+]);
 
 export async function scheduleInterview(
   _previousState: InterviewState,
@@ -55,6 +59,13 @@ export async function scheduleInterview(
 
   if (terminalStatuses.has(candidate.status)) {
     return { error: "Terminal candidates cannot be scheduled." };
+  }
+
+  if (!interviewSchedulingStatuses.has(candidate.status)) {
+    return {
+      error:
+        "The candidate must submit their application form before an interview can be scheduled.",
+    };
   }
 
   const { data: pendingInterview, error: pendingError } = await supabase
@@ -150,6 +161,35 @@ export async function completeInterview(
     return { error: "Supabase is not configured yet." };
   }
 
+  const { data: candidate, error: candidateError } = await supabase
+    .from("candidates")
+    .select("id,status")
+    .eq("id", candidateId)
+    .single();
+
+  if (candidateError || !candidate) {
+    return { error: "Candidate not found." };
+  }
+
+  if (terminalStatuses.has(candidate.status)) {
+    return { error: "Terminal candidates cannot receive interview feedback." };
+  }
+
+  const { data: interview, error: interviewLookupError } = await supabase
+    .from("interviews")
+    .select("id,status")
+    .eq("id", interviewId)
+    .eq("candidate_id", candidateId)
+    .single();
+
+  if (interviewLookupError || !interview) {
+    return { error: "Interview not found." };
+  }
+
+  if (interview.status !== "Scheduled") {
+    return { error: "Only scheduled interviews can be completed." };
+  }
+
   const now = new Date().toISOString();
   const { error: interviewError } = await supabase
     .from("interviews")
@@ -166,13 +206,13 @@ export async function completeInterview(
     return { error: interviewError.message };
   }
 
-  const { error: candidateError } = await supabase
+  const { error: candidateUpdateError } = await supabase
     .from("candidates")
     .update({ last_activity_at: now })
     .eq("id", candidateId);
 
-  if (candidateError) {
-    return { error: candidateError.message };
+  if (candidateUpdateError) {
+    return { error: candidateUpdateError.message };
   }
 
   await supabase.from("timeline_events").insert({

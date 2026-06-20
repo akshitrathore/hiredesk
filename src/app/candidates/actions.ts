@@ -112,6 +112,7 @@ export async function addCandidate(
 
   const { error: tokenError } = await supabase.from("application_tokens").insert({
     candidate_id: candidateId,
+    token,
     token_hash: tokenHash,
     expires_at: expiresAt.toISOString(),
   });

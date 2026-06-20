@@ -55,6 +55,7 @@ create table public.candidates (
 create table public.application_tokens (
   id uuid primary key default gen_random_uuid(),
   candidate_id uuid not null references public.candidates(id) on delete cascade,
+  token text not null,
   token_hash text not null unique,
   expires_at timestamptz not null,
   used_at timestamptz,

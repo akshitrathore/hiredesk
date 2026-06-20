@@ -3,11 +3,14 @@ import {
   CompleteInterviewForm,
   ScheduleInterviewForm,
 } from "@/app/candidates/[id]/interview-forms";
+import { ApplicationLinkCard } from "@/app/candidates/[id]/application-link-card";
+import { CandidateDecisionPanel } from "@/app/candidates/[id]/decision-form";
 import { OfferDocumentForm } from "@/app/candidates/[id]/offer-form";
 import { AppShell } from "@/components/app-shell";
 import { StatusBadge } from "@/components/status-badge";
 import { formatDate, formatDateTime } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
+import { getApplicationLink } from "@/lib/tokens";
 
 type CandidateProfile = {
   name: string;
@@ -62,6 +65,7 @@ export default async function CandidateProfilePage({
   let interviews: Interview[] = [];
   let timelineEvents: TimelineEvent[] = [];
   let documents: CandidateDocument[] = [];
+  let activeApplicationLink: string | null = null;
   let error: string | null = null;
 
   try {
@@ -71,6 +75,7 @@ export default async function CandidateProfilePage({
       { data: interviewRows, error: interviewsError },
       { data: timelineRows, error: timelineError },
       { data: documentRows, error: documentsError },
+      { data: tokenRow, error: tokenError },
     ] = await Promise.all([
       supabase
         .from("candidates")
@@ -90,12 +95,22 @@ export default async function CandidateProfilePage({
         .from("timeline_events")
         .select("id,title,description,created_at")
         .eq("candidate_id", id)
-        .order("created_at", { ascending: false }),
+        .order("created_at", { ascending: false })
+        .order("id", { ascending: false }),
       supabase
         .from("documents")
         .select("id,type,file_path,file_name,created_at")
         .eq("candidate_id", id)
         .order("created_at", { ascending: false }),
+      supabase
+        .from("application_tokens")
+        .select("token,expires_at,used_at")
+        .eq("candidate_id", id)
+        .is("used_at", null)
+        .gt("expires_at", new Date().toISOString())
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
     ]);
 
     if (queryError) {
@@ -106,6 +121,8 @@ export default async function CandidateProfilePage({
       error = timelineError.message;
     } else if (documentsError) {
       error = documentsError.message;
+    } else if (tokenError) {
+      error = tokenError.message;
     } else if (data) {
       let resumeUrl: string | null = null;
 
@@ -148,6 +165,9 @@ export default async function CandidateProfilePage({
           };
         }),
       );
+      activeApplicationLink = tokenRow?.token
+        ? getApplicationLink(tokenRow.token)
+        : null;
     }
   } catch {
     error = "Supabase is not configured yet.";
@@ -159,9 +179,21 @@ export default async function CandidateProfilePage({
   const hasPendingInterview = interviews.some(
     (interview) => interview.status === "Scheduled",
   );
-  const schedulingDisabled = isTerminal || hasPendingInterview;
+  const hasCompletedInterview = interviews.some(
+    (interview) => interview.status === "Completed",
+  );
+  const canScheduleInterview =
+    candidate?.status === "Form Submitted" ||
+    candidate?.status === "Interview Scheduled";
+  const schedulingDisabled =
+    isTerminal || hasPendingInterview || !canScheduleInterview;
   const canGenerateOffer =
-    candidate?.status === "Interview Scheduled" || candidate?.status === "Offer Sent";
+    hasCompletedInterview &&
+    (candidate?.status === "Interview Scheduled" ||
+      candidate?.status === "Offer Sent");
+  const documentTypes = new Set(documents.map((document) => document.type));
+  const canMarkHired =
+    documentTypes.has("Offer Letter") && documentTypes.has("NDA");
 
   return (
     <AppShell>
@@ -262,6 +294,10 @@ export default async function CandidateProfilePage({
             </p>
           </div>
 
+          {candidate.status === "Applied" && activeApplicationLink ? (
+            <ApplicationLinkCard link={activeApplicationLink} />
+          ) : null}
+
           <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
             <div className="space-y-5">
               <section className="rounded-lg border border-line bg-panel p-5">
@@ -281,6 +317,12 @@ export default async function CandidateProfilePage({
                   <p className="rounded-md border border-line bg-background px-3 py-2 text-sm text-muted">
                     Complete the pending interview before scheduling another
                     one.
+                  </p>
+                ) : null}
+                {!isTerminal && !hasPendingInterview && !canScheduleInterview ? (
+                  <p className="rounded-md border border-line bg-background px-3 py-2 text-sm text-muted">
+                    Interviews become available after the candidate submits
+                    their application form.
                   </p>
                 ) : null}
                 <ScheduleInterviewForm
@@ -344,14 +386,14 @@ export default async function CandidateProfilePage({
                 <div className="mb-4">
                   <h2 className="text-lg font-semibold">Offer documents</h2>
                   <p className="mt-1 text-sm text-muted">
-                    Generate a professional offer letter and NDA after interview
-                    scheduling begins.
+                    Generate a professional offer letter and NDA after at least
+                    one interview is completed.
                   </p>
                 </div>
                 {!canGenerateOffer ? (
                   <p className="mb-4 rounded-md border border-line bg-background px-3 py-2 text-sm text-muted">
-                    Offer documents become available once an interview has been
-                    scheduled.
+                    Offer documents become available after at least one
+                    interview is completed.
                   </p>
                 ) : null}
                 <OfferDocumentForm
@@ -383,6 +425,12 @@ export default async function CandidateProfilePage({
                   </div>
                 ) : null}
               </section>
+
+              <CandidateDecisionPanel
+                candidateId={id}
+                canMarkHired={canMarkHired}
+                isTerminal={isTerminal}
+              />
             </div>
 
             <section className="rounded-lg border border-line bg-panel p-5">

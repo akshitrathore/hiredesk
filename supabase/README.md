@@ -21,6 +21,12 @@ Open Supabase SQL Editor and run:
 supabase/migrations/001_initial_schema.sql
 ```
 
+If the initial schema has already been applied, run later migrations in order:
+
+```txt
+supabase/migrations/002_store_application_token_for_hr_display.sql
+```
+
 This creates:
 
 - Hiring workflow enums.

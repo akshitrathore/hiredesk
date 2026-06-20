@@ -71,7 +71,26 @@ export async function generateOfferDocuments(
   if (!allowedStatuses.has(candidate.status)) {
     return {
       error:
-        "Offer documents can be generated after an interview has been scheduled.",
+        "Offer documents can be generated after an interview has been completed.",
+    };
+  }
+
+  const { data: completedInterview, error: interviewError } = await supabase
+    .from("interviews")
+    .select("id")
+    .eq("candidate_id", candidateId)
+    .eq("status", "Completed")
+    .limit(1)
+    .maybeSingle();
+
+  if (interviewError) {
+    return { error: interviewError.message };
+  }
+
+  if (!completedInterview) {
+    return {
+      error:
+        "Complete at least one interview before generating offer documents.",
     };
   }
 

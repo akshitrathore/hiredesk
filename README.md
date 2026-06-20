@@ -53,6 +53,8 @@ assignment production-like without adding unnecessary infrastructure.
 - Closed openings are excluded from candidate intake.
 - Candidate records are created in `Applied` status.
 - One-time magic links are generated, hashed in storage, and shown for copying.
+- Active magic links are visible on the candidate profile until submitted or
+  expired.
 - Public `/apply/[token]` pages handle valid, invalid, expired, and used links.
 - Candidate form submission moves status to `Form Submitted`.
 - Candidate profile shows resume download and submitted application details.
@@ -69,11 +71,18 @@ assignment production-like without adding unnecessary infrastructure.
 ## Milestone 6 Status
 
 - HR can generate Offer Letter and NDA PDFs from a candidate profile.
-- Offer generation is available from `Interview Scheduled` or `Offer Sent`.
+- Offer generation is available after at least one completed interview.
 - Generated PDFs are persisted in Supabase Storage under the `documents` bucket.
 - Document records are stored in Postgres and re-downloadable from the profile.
 - Offer generation moves the candidate to `Offer Sent`.
 - Offer generation is logged in the candidate timeline.
+
+## Milestone 7 Status
+
+- HR can manually reject any non-terminal candidate with a required reason.
+- Rejection moves the candidate to `Rejected` and logs the reason in the timeline.
+- HR can mark candidates as `Hired` only after Offer Letter and NDA exist.
+- Hired and Rejected are treated as terminal statuses for profile actions.
 
 ## Environment
 
