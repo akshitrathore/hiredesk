@@ -1,4 +1,12 @@
-export default function SignInPage() {
+import { SignInForm } from "@/app/sign-in/sign-in-form";
+
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next } = await searchParams;
+
   return (
     <main className="grid min-h-screen place-items-center bg-background px-5 py-12">
       <section className="w-full max-w-md rounded-lg border border-line bg-panel p-6 shadow-sm">
@@ -15,30 +23,7 @@ export default function SignInPage() {
           </p>
         </div>
 
-        <form className="space-y-4">
-          <label className="block">
-            <span className="text-sm font-medium">Email</span>
-            <input
-              className="mt-2 h-11 w-full rounded-md border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
-              type="email"
-              placeholder="hr@rove.com"
-            />
-          </label>
-          <label className="block">
-            <span className="text-sm font-medium">Password</span>
-            <input
-              className="mt-2 h-11 w-full rounded-md border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
-              type="password"
-              placeholder="Enter password"
-            />
-          </label>
-          <button
-            className="h-11 w-full rounded-md bg-accent text-sm font-semibold text-white transition hover:bg-black"
-            type="submit"
-          >
-            Sign in
-          </button>
-        </form>
+        <SignInForm nextPath={next ?? "/dashboard"} />
       </section>
     </main>
   );

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { signOut } from "@/app/sign-in/actions";
+import { createClient } from "@/lib/supabase/server";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard" },
@@ -6,7 +8,19 @@ const navItems = [
   { href: "/interviews", label: "Interviews" },
 ];
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export async function AppShell({ children }: { children: React.ReactNode }) {
+  let email: string | null = null;
+
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    email = user?.email ?? null;
+  } catch {
+    // The shell can render before Supabase environment variables are configured.
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <aside className="fixed inset-y-0 left-0 hidden w-64 border-r border-line bg-panel/90 px-5 py-6 lg:block">
@@ -46,15 +60,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               Internal workspace
             </div>
             <div className="flex items-center gap-3">
-              <span className="hidden rounded-full border border-line bg-panel px-3 py-1 text-xs text-muted sm:inline">
-                HR team
-              </span>
-              <Link
-                href="/sign-in"
-                className="rounded-md border border-line bg-panel px-3 py-2 text-sm font-medium transition hover:border-foreground"
-              >
-                Sign in
-              </Link>
+              {email ? (
+                <>
+                  <span className="hidden max-w-52 truncate rounded-full border border-line bg-panel px-3 py-1 text-xs text-muted sm:inline">
+                    {email}
+                  </span>
+                  <form action={signOut}>
+                    <button
+                      className="rounded-md border border-line bg-panel px-3 py-2 text-sm font-medium transition hover:border-foreground"
+                      type="submit"
+                    >
+                      Sign out
+                    </button>
+                  </form>
+                </>
+              ) : (
+                <Link
+                  href="/sign-in"
+                  className="rounded-md border border-line bg-panel px-3 py-2 text-sm font-medium transition hover:border-foreground"
+                >
+                  Sign in
+                </Link>
+              )}
             </div>
           </div>
         </header>

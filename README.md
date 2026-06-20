@@ -26,6 +26,15 @@ assignment production-like without adding unnecessary infrastructure.
   Create Job, and Add Candidate routes.
 - Product and technical spec lives in `SPEC.md`.
 
+## Milestone 2 Status
+
+- Initial Supabase schema added in `supabase/migrations/001_initial_schema.sql`.
+- Private `resumes` and `documents` storage buckets defined.
+- RLS policies added for authenticated HR users.
+- Email/password sign-in wired through Supabase Auth.
+- Sign-out action added.
+- App shell now reflects the authenticated HR user when a session exists.
+
 ## Environment
 
 Copy `.env.example` to `.env.local` and provide:
@@ -33,6 +42,7 @@ Copy `.env.example` to `.env.local` and provide:
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 ```
 
 Without these values, the app shell can render, but Supabase-backed auth and data

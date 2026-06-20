@@ -367,7 +367,7 @@ If using Supabase Auth, app-specific profile data can live here.
 - `email`
 - `phone`
 - `current_location`
-- `current_role`
+- `current_position`
 - `notice_period`
 - `salary_expectation`
 - `linkedin_url`
@@ -567,4 +567,3 @@ These can be finalized during development:
 - Whether document downloads use Supabase signed URLs directly or a protected app route.
 - Whether timeline events are rendered with grouped dates or a simple recent-first list.
 - Whether the dashboard defaults to all candidates or active non-terminal candidates first.
-
