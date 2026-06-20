@@ -57,6 +57,15 @@ assignment production-like without adding unnecessary infrastructure.
 - Candidate form submission moves status to `Form Submitted`.
 - Candidate profile shows resume download and submitted application details.
 
+## Milestone 5 Status
+
+- HR can schedule Screening or Technical intercaviews from a candidate profile.
+- Scheduling an interview moves the candidate to `Interview Scheduled`.
+- Interviews appear on the candidate profile and the `/interviews` page.
+- HR can mark interviews as completed with Hire, No Hire, or Maybe feedback.
+- Feedback is shown on the candidate profile.
+- Candidate profile now shows timeline events ordered most recent first.
+
 ## Environment
 
 Copy `.env.example` to `.env.local` and provide:
