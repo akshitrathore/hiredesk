@@ -8,6 +8,7 @@ Create a new Supabase project and copy these values into `.env.local`:
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_APP_URL=
 ```
 
 The service role key must stay server-only. Never expose it in client components

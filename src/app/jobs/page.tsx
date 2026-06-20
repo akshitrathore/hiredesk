@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Pencil } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { EmptyState } from "@/components/empty-state";
+import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { formatDate } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
@@ -53,24 +55,19 @@ export default async function JobsPage() {
 
   return (
     <AppShell>
-      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-        <div>
-          <p className="text-sm font-medium text-muted">Openings</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-            Job openings
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-            Create roles, attach required skills, and keep closed openings
-            visible for historical candidate records.
-          </p>
-        </div>
+      <PageHeader
+        eyebrow="Openings"
+        title="Job openings"
+        description="Create roles, attach required skills, and keep closed openings visible for historical candidate records."
+        action={
         <Link
           href="/jobs/new"
-          className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-white transition hover:bg-black"
+          className="inline-flex h-10 items-center justify-center rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-black"
         >
           + New Opening
         </Link>
-      </div>
+        }
+      />
 
       {error ? (
         <section className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700">
@@ -79,17 +76,17 @@ export default async function JobsPage() {
       ) : null}
 
       {jobs.length === 0 && !error ? (
-        <section className="mt-6 rounded-lg border border-line bg-panel px-4 py-14 text-center">
-          <h2 className="text-sm font-semibold">No job openings yet</h2>
-          <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted">
-            Create an open role before adding candidates to the pipeline.
-          </p>
+        <section className="mt-6 rounded-xl border border-line bg-panel shadow-sm">
+          <EmptyState
+            title="No job openings yet"
+            description="Create an open role before adding candidates to the pipeline."
+          />
         </section>
       ) : (
         <section className="mt-6 grid gap-3">
           {jobs.map((job) => (
             <article
-              className="rounded-lg border border-line bg-panel p-5"
+              className="rounded-xl border border-line bg-panel p-5 shadow-sm transition hover:border-neutral-300"
               key={job.id}
             >
               <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
@@ -113,7 +110,7 @@ export default async function JobsPage() {
                   </div>
                   <Link
                     aria-label={`Edit ${job.title}`}
-                    className="inline-flex size-9 items-center justify-center rounded-md border border-line bg-background text-muted transition hover:border-foreground hover:text-foreground"
+                    className="inline-flex size-9 items-center justify-center rounded-lg border border-line bg-background text-muted transition hover:border-foreground hover:bg-white hover:text-foreground"
                     href={`/jobs/${job.id}/edit`}
                     title={`Edit ${job.title}`}
                   >

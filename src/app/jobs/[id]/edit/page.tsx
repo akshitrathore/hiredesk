@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { JobForm } from "@/app/jobs/new/job-form";
 import { AppShell } from "@/components/app-shell";
+import { PageHeader } from "@/components/page-header";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function EditJobPage({
@@ -47,20 +49,21 @@ export default async function EditJobPage({
       <div className="max-w-2xl">
         <Link
           href="/jobs"
-          className="text-sm font-medium text-muted hover:text-foreground"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted transition hover:text-foreground"
         >
+          <ArrowLeft aria-hidden="true" size={15} />
           Back to jobs
         </Link>
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight">
-          Edit job opening
-        </h1>
-        <p className="mt-2 text-sm leading-6 text-muted">
-          Update the role details or close the opening when it should stop
-          accepting new candidates.
-        </p>
+        <div className="mt-4">
+          <PageHeader
+            eyebrow="Openings"
+            title="Edit job opening"
+            description="Update the role details or close the opening when it should stop accepting new candidates."
+          />
+        </div>
 
         {error ? (
-          <section className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700">
+          <section className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700">
             {error}
           </section>
         ) : null}

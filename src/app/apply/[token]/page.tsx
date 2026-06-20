@@ -59,7 +59,10 @@ function MessageScreen({
   message: string;
 }) {
   return (
-    <section className="rounded-lg border border-line bg-panel p-6 text-center">
+    <section className="rounded-2xl border border-line bg-panel p-8 text-center shadow-[0_24px_80px_rgba(23,22,21,0.08)]">
+      <div className="mx-auto mb-5 grid size-11 place-items-center rounded-2xl border border-line bg-background text-sm font-semibold">
+        R
+      </div>
       <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
       <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted">
         {message}
@@ -77,13 +80,15 @@ export default async function ApplyPage({
   const tokenState = await getTokenState(token);
 
   return (
-    <main className="grid min-h-screen place-items-center bg-background px-5 py-12 text-foreground">
+    <main className="product-shell grid min-h-screen place-items-center px-5 py-12 text-foreground">
       <div className="w-full max-w-2xl">
         <div className="mb-8 text-center">
-          <span className="mx-auto grid size-10 place-items-center rounded-lg bg-accent text-sm font-semibold text-white">
-            RH
+          <span className="mx-auto grid size-11 place-items-center rounded-xl bg-accent text-sm font-semibold text-white shadow-sm">
+            R
           </span>
-          <p className="mt-4 text-sm font-medium text-muted">ROVE Hire</p>
+          <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+            ROVE Hire
+          </p>
         </div>
 
         {tokenState.status === "invalid" ? (
@@ -109,7 +114,10 @@ export default async function ApplyPage({
 
         {tokenState.status === "valid" ? (
           <>
-            <div className="mb-5">
+            <div className="mb-5 rounded-2xl border border-line bg-panel p-6 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                Candidate application
+              </p>
               <h1 className="text-3xl font-semibold tracking-tight">
                 Complete your application
               </h1>

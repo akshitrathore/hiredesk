@@ -20,7 +20,7 @@ function SubmitButton({
 
   return (
     <button
-      className="h-10 rounded-md bg-accent px-4 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+      className="h-10 rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
       disabled={disabled || pending}
       type="submit"
     >
@@ -39,13 +39,16 @@ export function ScheduleInterviewForm({
   const [state, formAction] = useActionState(scheduleInterview, {});
 
   return (
-    <form action={formAction} className="space-y-4 rounded-md border border-line bg-background p-4">
+    <form
+      action={formAction}
+      className="space-y-4 rounded-xl border border-line bg-background p-4"
+    >
       <input name="candidate_id" type="hidden" value={candidateId} />
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
           <span className="text-sm font-medium">Date</span>
           <input
-            className="mt-2 h-10 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground"
+            className="mt-2 h-10 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
             disabled={disabled}
             name="date"
             required
@@ -55,7 +58,7 @@ export function ScheduleInterviewForm({
         <label className="block">
           <span className="text-sm font-medium">Time</span>
           <input
-            className="mt-2 h-10 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground"
+            className="mt-2 h-10 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
             disabled={disabled}
             name="time"
             required
@@ -67,7 +70,7 @@ export function ScheduleInterviewForm({
         <label className="block">
           <span className="text-sm font-medium">Type</span>
           <select
-            className="mt-2 h-10 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground"
+            className="mt-2 h-10 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
             disabled={disabled}
             name="type"
             required
@@ -79,7 +82,7 @@ export function ScheduleInterviewForm({
         <label className="block">
           <span className="text-sm font-medium">Interviewer</span>
           <input
-            className="mt-2 h-10 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground"
+            className="mt-2 h-10 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
             disabled={disabled}
             name="interviewer_name"
             placeholder="Maya Patel"
@@ -90,7 +93,7 @@ export function ScheduleInterviewForm({
       <label className="block">
         <span className="text-sm font-medium">Notes</span>
         <textarea
-          className="mt-2 min-h-20 w-full rounded-md border border-line bg-white px-3 py-2 text-sm outline-none focus:border-foreground"
+          className="mt-2 min-h-20 w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none transition focus:border-foreground"
           disabled={disabled}
           name="notes"
           placeholder="Optional context for the interviewer"
@@ -98,12 +101,12 @@ export function ScheduleInterviewForm({
       </label>
 
       {state.error ? (
-        <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {state.error}
         </p>
       ) : null}
       {state.success ? (
-        <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
           {state.success}
         </p>
       ) : null}
@@ -127,7 +130,10 @@ export function CompleteInterviewForm({
   const [state, formAction] = useActionState(completeInterview, {});
 
   return (
-    <form action={formAction} className="mt-4 space-y-3 rounded-md border border-line bg-background p-3">
+    <form
+      action={formAction}
+      className="mt-4 space-y-3 rounded-xl border border-line bg-background p-3"
+    >
       <input name="interview_id" type="hidden" value={interviewId} />
       <input name="candidate_id" type="hidden" value={candidateId} />
       <label className="block">
@@ -135,7 +141,7 @@ export function CompleteInterviewForm({
           Recommendation
         </span>
         <select
-          className="mt-2 h-10 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground"
+          className="mt-2 h-10 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
           name="recommendation"
           required
         >
@@ -149,7 +155,7 @@ export function CompleteInterviewForm({
           Feedback note
         </span>
         <textarea
-          className="mt-2 min-h-20 w-full rounded-md border border-line bg-white px-3 py-2 text-sm outline-none focus:border-foreground"
+          className="mt-2 min-h-20 w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none transition focus:border-foreground"
           name="feedback_note"
           placeholder="Short feedback from the interview"
           required
@@ -157,12 +163,12 @@ export function CompleteInterviewForm({
       </label>
 
       {state.error ? (
-        <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {state.error}
         </p>
       ) : null}
       {state.success ? (
-        <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
           {state.success}
         </p>
       ) : null}

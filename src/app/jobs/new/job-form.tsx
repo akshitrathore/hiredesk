@@ -9,7 +9,7 @@ function SubmitButton() {
 
   return (
     <button
-      className="h-10 rounded-md bg-accent px-4 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+      className="h-10 rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
       disabled={pending}
       type="submit"
     >
@@ -32,13 +32,16 @@ export function JobForm({ job }: JobFormProps) {
   const [state, formAction] = useActionState(job ? updateJob : createJob, {});
 
   return (
-    <form action={formAction} className="mt-6 space-y-5 rounded-lg border border-line bg-panel p-5">
+    <form
+      action={formAction}
+      className="mt-6 space-y-5 rounded-xl border border-line bg-panel p-5 shadow-sm"
+    >
       {job ? <input name="id" type="hidden" value={job.id} /> : null}
       <label className="block">
         <span className="text-sm font-medium">Title</span>
         <input
           defaultValue={job?.title}
-          className="mt-2 h-11 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground"
+          className="mt-2 h-11 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
           name="title"
           placeholder="Senior Product Designer"
           required
@@ -48,7 +51,7 @@ export function JobForm({ job }: JobFormProps) {
         <span className="text-sm font-medium">Description</span>
         <textarea
           defaultValue={job?.description}
-          className="mt-2 min-h-36 w-full rounded-md border border-line bg-white px-3 py-3 text-sm outline-none focus:border-foreground"
+          className="mt-2 min-h-36 w-full rounded-lg border border-line bg-white px-3 py-3 text-sm outline-none transition focus:border-foreground"
           name="description"
           placeholder="Describe the role, team, and what success looks like."
           required
@@ -58,7 +61,7 @@ export function JobForm({ job }: JobFormProps) {
         <span className="text-sm font-medium">Required skills</span>
         <input
           defaultValue={job?.required_skills.join(", ")}
-          className="mt-2 h-11 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground"
+          className="mt-2 h-11 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
           name="required_skills"
           placeholder="Product, SQL, stakeholder management"
           required
@@ -70,7 +73,7 @@ export function JobForm({ job }: JobFormProps) {
       <label className="block">
         <span className="text-sm font-medium">Status</span>
         <select
-          className="mt-2 h-11 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground"
+          className="mt-2 h-11 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
           name="status"
           defaultValue={job?.status ?? "Open"}
         >
@@ -79,7 +82,7 @@ export function JobForm({ job }: JobFormProps) {
         </select>
       </label>
       {state.error ? (
-        <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {state.error}
         </p>
       ) : null}

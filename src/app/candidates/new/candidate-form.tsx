@@ -16,7 +16,7 @@ function SubmitButton({ disabled }: { disabled: boolean }) {
 
   return (
     <button
-      className="h-10 rounded-md bg-accent px-4 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+      className="h-10 rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
       disabled={disabled || pending}
       type="submit"
     >
@@ -32,11 +32,14 @@ export function CandidateForm({ jobs }: CandidateFormProps) {
 
   return (
     <div className="mt-6 space-y-4">
-      <form action={formAction} className="space-y-5 rounded-lg border border-line bg-panel p-5">
+      <form
+        action={formAction}
+        className="space-y-5 rounded-xl border border-line bg-panel p-5 shadow-sm"
+      >
         <label className="block">
           <span className="text-sm font-medium">Candidate name</span>
           <input
-            className="mt-2 h-11 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground"
+            className="mt-2 h-11 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
             name="name"
             placeholder="Avery Johnson"
             required
@@ -45,7 +48,7 @@ export function CandidateForm({ jobs }: CandidateFormProps) {
         <label className="block">
           <span className="text-sm font-medium">Email</span>
           <input
-            className="mt-2 h-11 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground"
+            className="mt-2 h-11 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
             name="email"
             placeholder="avery@example.com"
             type="email"
@@ -55,7 +58,7 @@ export function CandidateForm({ jobs }: CandidateFormProps) {
         <label className="block">
           <span className="text-sm font-medium">Job opening</span>
           <select
-            className="mt-2 h-11 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground disabled:cursor-not-allowed disabled:bg-background disabled:text-muted"
+            className="mt-2 h-11 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground disabled:cursor-not-allowed disabled:bg-background disabled:text-muted"
             disabled={!hasJobs}
             name="job_id"
             required
@@ -75,7 +78,7 @@ export function CandidateForm({ jobs }: CandidateFormProps) {
           <span className="text-sm font-medium">Resume PDF</span>
           <input
             accept="application/pdf"
-            className="mt-2 w-full rounded-md border border-dashed border-line bg-white px-3 py-3 text-sm outline-none focus:border-foreground"
+            className="mt-2 w-full rounded-xl border border-dashed border-line bg-white px-3 py-3 text-sm outline-none transition focus:border-foreground"
             name="resume"
             required
             type="file"
@@ -86,7 +89,7 @@ export function CandidateForm({ jobs }: CandidateFormProps) {
         </label>
 
         {state.error ? (
-          <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             {state.error}
           </p>
         ) : null}
@@ -95,7 +98,7 @@ export function CandidateForm({ jobs }: CandidateFormProps) {
       </form>
 
       {state.magicLink ? (
-        <section className="rounded-lg border border-emerald-200 bg-emerald-50 p-5">
+        <section className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
           <h2 className="text-sm font-semibold text-emerald-900">
             Candidate added
           </h2>
@@ -105,13 +108,13 @@ export function CandidateForm({ jobs }: CandidateFormProps) {
           </p>
           <div className="mt-4 flex flex-col gap-3 sm:flex-row">
             <input
-              className="h-10 flex-1 rounded-md border border-emerald-200 bg-white px-3 text-sm text-emerald-950 outline-none"
+              className="h-10 flex-1 rounded-lg border border-emerald-200 bg-white px-3 text-sm text-emerald-950 outline-none"
               readOnly
               ref={linkRef}
               value={state.magicLink}
             />
             <button
-              className="h-10 rounded-md bg-emerald-900 px-4 text-sm font-semibold text-white"
+              className="h-10 rounded-lg bg-emerald-900 px-4 text-sm font-semibold text-white"
               onClick={() => {
                 linkRef.current?.select();
                 navigator.clipboard.writeText(state.magicLink ?? "");

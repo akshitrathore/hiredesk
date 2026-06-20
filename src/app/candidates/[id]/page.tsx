@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft, Download, ExternalLink } from "lucide-react";
 import {
   CompleteInterviewForm,
   ScheduleInterviewForm,
@@ -199,8 +200,9 @@ export default async function CandidateProfilePage({
     <AppShell>
       <Link
         href="/dashboard"
-        className="text-sm font-medium text-muted hover:text-foreground"
+        className="inline-flex items-center gap-2 text-sm font-medium text-muted transition hover:text-foreground"
       >
+        <ArrowLeft aria-hidden="true" size={15} />
         Back to dashboard
       </Link>
 
@@ -218,80 +220,119 @@ export default async function CandidateProfilePage({
 
       {candidate ? (
         <section className="mt-6 space-y-5">
-          <div className="rounded-lg border border-line bg-panel p-6">
-            <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
-              <div>
-                <p className="text-sm font-medium text-muted">
-                  {candidate.jobTitle}
-                </p>
-                <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-                  {candidate.name}
-                </h1>
-                <p className="mt-2 text-sm text-muted">{candidate.email}</p>
-              </div>
-              <StatusBadge status={candidate.status} />
-            </div>
-
-            <div className="mt-8 grid gap-4 md:grid-cols-2">
-              <div className="rounded-md border border-line bg-background p-4">
-                <p className="text-sm font-semibold">Basic info</p>
-                <dl className="mt-4 space-y-3 text-sm">
-                  <div>
-                    <dt className="text-muted">Phone</dt>
-                    <dd>{candidate.phone ?? "Not submitted"}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-muted">Location</dt>
-                    <dd>{candidate.current_location ?? "Not submitted"}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-muted">Current role</dt>
-                    <dd>{candidate.current_position ?? "Not submitted"}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-muted">Notice period</dt>
-                    <dd>{candidate.notice_period ?? "Not submitted"}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-muted">Salary expectation</dt>
-                    <dd>{candidate.salary_expectation ?? "Not submitted"}</dd>
-                  </div>
-                </dl>
-              </div>
-
-              <div className="rounded-md border border-line bg-background p-4">
-                <p className="text-sm font-semibold">Files and links</p>
-                <div className="mt-4 space-y-3 text-sm">
-                  {candidate.resumeUrl ? (
-                    <a
-                      className="block rounded-md border border-line bg-panel px-3 py-2 font-medium transition hover:border-foreground"
-                      href={candidate.resumeUrl}
-                    >
-                      Download {candidate.resume_file_name ?? "resume"}
-                    </a>
-                  ) : (
-                    <p className="text-muted">No resume available.</p>
-                  )}
-
-                  {candidate.linkedin_url ? (
-                    <a
-                      className="block rounded-md border border-line bg-panel px-3 py-2 font-medium transition hover:border-foreground"
-                      href={candidate.linkedin_url}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      View LinkedIn profile
-                    </a>
-                  ) : (
-                    <p className="text-muted">LinkedIn not submitted.</p>
-                  )}
+          <div className="overflow-hidden rounded-xl border border-line bg-panel shadow-sm">
+            <div className="border-b border-line bg-background/55 px-6 py-5">
+              <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                    {candidate.jobTitle}
+                  </p>
+                  <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+                    {candidate.name}
+                  </h1>
+                  <p className="mt-2 text-sm text-muted">{candidate.email}</p>
+                </div>
+                <div className="flex flex-col items-start gap-2 md:items-end">
+                  <StatusBadge status={candidate.status} />
+                  <p className="text-xs text-muted">
+                    Last activity {formatDate(candidate.last_activity_at)}
+                  </p>
                 </div>
               </div>
             </div>
 
-            <p className="mt-5 text-xs text-muted">
-              Last activity {formatDate(candidate.last_activity_at)}
-            </p>
+            <div className="grid gap-4 p-6 md:grid-cols-[1.1fr_0.9fr]">
+              <div className="rounded-xl border border-line bg-white p-4">
+                <p className="text-sm font-semibold">Basic info</p>
+                <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-2">
+                  <div>
+                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                      Phone
+                    </dt>
+                    <dd className="mt-1 font-medium">
+                      {candidate.phone ?? "Not submitted"}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                      Location
+                    </dt>
+                    <dd className="mt-1 font-medium">
+                      {candidate.current_location ?? "Not submitted"}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                      Current role
+                    </dt>
+                    <dd className="mt-1 font-medium">
+                      {candidate.current_position ?? "Not submitted"}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                      Notice period
+                    </dt>
+                    <dd className="mt-1 font-medium">
+                      {candidate.notice_period ?? "Not submitted"}
+                    </dd>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                      Salary expectation
+                    </dt>
+                    <dd className="mt-1 font-medium">
+                      {candidate.salary_expectation ?? "Not submitted"}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div className="rounded-xl border border-line bg-white p-4">
+                <p className="text-sm font-semibold">Files and links</p>
+                <div className="mt-4 space-y-3 text-sm">
+                  {candidate.resumeUrl ? (
+                    <a
+                      className="flex items-center justify-between gap-3 rounded-lg border border-line bg-background px-3 py-3 font-medium transition hover:border-foreground hover:bg-white"
+                      href={candidate.resumeUrl}
+                    >
+                      <span className="truncate">
+                        {candidate.resume_file_name ?? "Resume"}
+                      </span>
+                      <Download
+                        aria-hidden="true"
+                        className="shrink-0 text-muted"
+                        size={16}
+                      />
+                    </a>
+                  ) : (
+                    <p className="rounded-lg border border-line bg-background px-3 py-3 text-muted">
+                      No resume available.
+                    </p>
+                  )}
+
+                  {candidate.linkedin_url ? (
+                    <a
+                      className="flex items-center justify-between gap-3 rounded-lg border border-line bg-background px-3 py-3 font-medium transition hover:border-foreground hover:bg-white"
+                      href={candidate.linkedin_url}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      <span>LinkedIn profile</span>
+                      <ExternalLink
+                        aria-hidden="true"
+                        className="text-muted"
+                        size={16}
+                      />
+                    </a>
+                  ) : (
+                    <p className="rounded-lg border border-line bg-background px-3 py-3 text-muted">
+                      LinkedIn not submitted.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
 
           {candidate.status === "Applied" && activeApplicationLink ? (
@@ -300,7 +341,7 @@ export default async function CandidateProfilePage({
 
           <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
             <div className="space-y-5">
-              <section className="rounded-lg border border-line bg-panel p-5">
+              <section className="rounded-xl border border-line bg-panel p-5 shadow-sm">
                 <div className="mb-4">
                   <h2 className="text-lg font-semibold">Schedule interview</h2>
                   <p className="mt-1 text-sm text-muted">
@@ -309,18 +350,18 @@ export default async function CandidateProfilePage({
                   </p>
                 </div>
                 {isTerminal ? (
-                  <p className="rounded-md border border-line bg-background px-3 py-2 text-sm text-muted">
+                  <p className="rounded-lg border border-line bg-background px-3 py-2 text-sm text-muted">
                     Terminal candidates cannot be scheduled.
                   </p>
                 ) : null}
                 {!isTerminal && hasPendingInterview ? (
-                  <p className="rounded-md border border-line bg-background px-3 py-2 text-sm text-muted">
+                  <p className="rounded-lg border border-line bg-background px-3 py-2 text-sm text-muted">
                     Complete the pending interview before scheduling another
                     one.
                   </p>
                 ) : null}
                 {!isTerminal && !hasPendingInterview && !canScheduleInterview ? (
-                  <p className="rounded-md border border-line bg-background px-3 py-2 text-sm text-muted">
+                  <p className="rounded-lg border border-line bg-background px-3 py-2 text-sm text-muted">
                     Interviews become available after the candidate submits
                     their application form.
                   </p>
@@ -331,17 +372,17 @@ export default async function CandidateProfilePage({
                 />
               </section>
 
-              <section className="rounded-lg border border-line bg-panel p-5">
+              <section className="rounded-xl border border-line bg-panel p-5 shadow-sm">
                 <h2 className="text-lg font-semibold">Interviews</h2>
                 {interviews.length === 0 ? (
-                  <p className="mt-4 rounded-md border border-line bg-background px-3 py-8 text-center text-sm text-muted">
+                  <p className="mt-4 rounded-lg border border-line bg-background px-3 py-8 text-center text-sm text-muted">
                     No interviews scheduled yet.
                   </p>
                 ) : (
                   <div className="mt-4 space-y-3">
                     {interviews.map((interview) => (
                       <article
-                        className="rounded-md border border-line bg-background p-4"
+                        className="rounded-xl border border-line bg-background p-4"
                         key={interview.id}
                       >
                         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
@@ -362,7 +403,7 @@ export default async function CandidateProfilePage({
                           </p>
                         ) : null}
                         {interview.status === "Completed" ? (
-                          <div className="mt-4 rounded-md border border-line bg-panel p-3 text-sm">
+                          <div className="mt-4 rounded-lg border border-line bg-panel p-3 text-sm">
                             <p className="font-medium">
                               Recommendation: {interview.recommendation}
                             </p>
@@ -382,7 +423,7 @@ export default async function CandidateProfilePage({
                 )}
               </section>
 
-              <section className="rounded-lg border border-line bg-panel p-5">
+              <section className="rounded-xl border border-line bg-panel p-5 shadow-sm">
                 <div className="mb-4">
                   <h2 className="text-lg font-semibold">Offer documents</h2>
                   <p className="mt-1 text-sm text-muted">
@@ -391,7 +432,7 @@ export default async function CandidateProfilePage({
                   </p>
                 </div>
                 {!canGenerateOffer ? (
-                  <p className="mb-4 rounded-md border border-line bg-background px-3 py-2 text-sm text-muted">
+                  <p className="mb-4 rounded-lg border border-line bg-background px-3 py-2 text-sm text-muted">
                     Offer documents become available after at least one
                     interview is completed.
                   </p>
@@ -407,7 +448,7 @@ export default async function CandidateProfilePage({
                     <p className="text-sm font-semibold">Generated files</p>
                     {documents.map((document) => (
                       <a
-                        className="flex items-center justify-between rounded-md border border-line bg-background px-3 py-2 text-sm transition hover:border-foreground"
+                        className="flex items-center justify-between rounded-lg border border-line bg-background px-3 py-2 text-sm transition hover:border-foreground hover:bg-white"
                         href={document.downloadUrl ?? "#"}
                         key={document.id}
                       >
@@ -433,10 +474,10 @@ export default async function CandidateProfilePage({
               />
             </div>
 
-            <section className="rounded-lg border border-line bg-panel p-5">
+            <section className="rounded-xl border border-line bg-panel p-5 shadow-sm xl:sticky xl:top-28 xl:self-start">
               <h2 className="text-lg font-semibold">Timeline</h2>
               {timelineEvents.length === 0 ? (
-                <p className="mt-4 rounded-md border border-line bg-background px-3 py-8 text-center text-sm text-muted">
+                <p className="mt-4 rounded-lg border border-line bg-background px-3 py-8 text-center text-sm text-muted">
                   No timeline events yet.
                 </p>
               ) : (
@@ -463,7 +504,7 @@ export default async function CandidateProfilePage({
                         />
                       </span>
                       <div
-                        className={`rounded-md border p-4 ${
+                        className={`rounded-xl border p-4 ${
                           index === 0
                             ? "border-foreground bg-white shadow-sm"
                             : "border-line bg-background"

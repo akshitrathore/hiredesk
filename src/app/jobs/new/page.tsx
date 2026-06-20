@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { JobForm } from "@/app/jobs/new/job-form";
 import { AppShell } from "@/components/app-shell";
+import { PageHeader } from "@/components/page-header";
 
 export default function NewJobPage() {
   return (
@@ -8,17 +10,18 @@ export default function NewJobPage() {
       <div className="max-w-2xl">
         <Link
           href="/jobs"
-          className="text-sm font-medium text-muted hover:text-foreground"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted transition hover:text-foreground"
         >
+          <ArrowLeft aria-hidden="true" size={15} />
           Back to jobs
         </Link>
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight">
-          Create job opening
-        </h1>
-        <p className="mt-2 text-sm leading-6 text-muted">
-          Define the role, required skills, and whether the opening is ready for
-          new candidates.
-        </p>
+        <div className="mt-4">
+          <PageHeader
+            eyebrow="Openings"
+            title="Create job opening"
+            description="Define the role, required skills, and whether the opening is ready for new candidates."
+          />
+        </div>
 
         <JobForm />
       </div>

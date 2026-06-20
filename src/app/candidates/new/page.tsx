@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { CandidateForm } from "@/app/candidates/new/candidate-form";
 import { AppShell } from "@/components/app-shell";
+import { PageHeader } from "@/components/page-header";
 import { createClient } from "@/lib/supabase/server";
 
 async function getOpenJobs() {
@@ -30,20 +32,21 @@ export default async function NewCandidatePage() {
       <div className="max-w-2xl">
         <Link
           href="/dashboard"
-          className="text-sm font-medium text-muted hover:text-foreground"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted transition hover:text-foreground"
         >
+          <ArrowLeft aria-hidden="true" size={15} />
           Back to dashboard
         </Link>
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight">
-          Add candidate
-        </h1>
-        <p className="mt-2 text-sm leading-6 text-muted">
-          Upload a resume, associate the candidate with an open job, and
-          generate a secure application link.
-        </p>
+        <div className="mt-4">
+          <PageHeader
+            eyebrow="Candidate intake"
+            title="Add candidate"
+            description="Upload a resume, associate the candidate with an open job, and generate a secure application link."
+          />
+        </div>
 
         {error ? (
-          <section className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700">
+          <section className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700">
             {error}
           </section>
         ) : null}

@@ -9,7 +9,7 @@ function SubmitButton() {
 
   return (
     <button
-      className="h-11 w-full rounded-md bg-accent text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+      className="h-11 w-full rounded-lg bg-accent text-sm font-semibold text-white shadow-sm transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
       disabled={pending}
       type="submit"
     >
@@ -27,7 +27,7 @@ export function SignInForm({ nextPath }: { nextPath: string }) {
       <label className="block">
         <span className="text-sm font-medium">Email</span>
         <input
-          className="mt-2 h-11 w-full rounded-md border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
+          className="mt-2 h-11 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
           name="email"
           type="email"
           placeholder="hr@rove.com"
@@ -37,7 +37,7 @@ export function SignInForm({ nextPath }: { nextPath: string }) {
       <label className="block">
         <span className="text-sm font-medium">Password</span>
         <input
-          className="mt-2 h-11 w-full rounded-md border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
+          className="mt-2 h-11 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
           name="password"
           type="password"
           placeholder="Enter password"
@@ -45,7 +45,7 @@ export function SignInForm({ nextPath }: { nextPath: string }) {
         />
       </label>
       {state.error ? (
-        <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {state.error}
         </p>
       ) : null}

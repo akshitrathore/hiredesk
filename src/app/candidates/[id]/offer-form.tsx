@@ -9,7 +9,7 @@ function SubmitButton({ disabled }: { disabled: boolean }) {
 
   return (
     <button
-      className="h-10 rounded-md bg-accent px-4 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+      className="h-10 rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
       disabled={disabled || pending}
       type="submit"
     >
@@ -30,13 +30,16 @@ export function OfferDocumentForm({
   const [state, formAction] = useActionState(generateOfferDocuments, {});
 
   return (
-    <form action={formAction} className="space-y-4 rounded-md border border-line bg-background p-4">
+    <form
+      action={formAction}
+      className="space-y-4 rounded-xl border border-line bg-background p-4"
+    >
       <input name="candidate_id" type="hidden" value={candidateId} />
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
           <span className="text-sm font-medium">Role title</span>
           <input
-            className="mt-2 h-10 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground disabled:bg-background disabled:text-muted"
+            className="mt-2 h-10 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground disabled:bg-background disabled:text-muted"
             defaultValue={defaultRoleTitle}
             disabled={disabled}
             name="role_title"
@@ -46,7 +49,7 @@ export function OfferDocumentForm({
         <label className="block">
           <span className="text-sm font-medium">Location</span>
           <input
-            className="mt-2 h-10 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground disabled:bg-background disabled:text-muted"
+            className="mt-2 h-10 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground disabled:bg-background disabled:text-muted"
             disabled={disabled}
             name="location"
             placeholder="Bengaluru, India"
@@ -58,7 +61,7 @@ export function OfferDocumentForm({
         <label className="block">
           <span className="text-sm font-medium">Currency</span>
           <select
-            className="mt-2 h-10 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground disabled:bg-background disabled:text-muted"
+            className="mt-2 h-10 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground disabled:bg-background disabled:text-muted"
             defaultValue="INR"
             disabled={disabled}
             name="currency"
@@ -73,7 +76,7 @@ export function OfferDocumentForm({
         <label className="block">
           <span className="text-sm font-medium">Salary amount</span>
           <input
-            className="mt-2 h-10 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground disabled:bg-background disabled:text-muted"
+            className="mt-2 h-10 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground disabled:bg-background disabled:text-muted"
             disabled={disabled}
             name="salary_amount"
             placeholder="2400000"
@@ -85,7 +88,7 @@ export function OfferDocumentForm({
         <label className="block">
           <span className="text-sm font-medium">Start date</span>
           <input
-            className="mt-2 h-10 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground disabled:bg-background disabled:text-muted"
+            className="mt-2 h-10 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground disabled:bg-background disabled:text-muted"
             disabled={disabled}
             name="start_date"
             required
@@ -95,7 +98,7 @@ export function OfferDocumentForm({
         <label className="block">
           <span className="text-sm font-medium">Reporting manager</span>
           <input
-            className="mt-2 h-10 w-full rounded-md border border-line bg-white px-3 text-sm outline-none focus:border-foreground disabled:bg-background disabled:text-muted"
+            className="mt-2 h-10 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground disabled:bg-background disabled:text-muted"
             disabled={disabled}
             name="reporting_manager"
             placeholder="Maya Patel"
@@ -105,12 +108,12 @@ export function OfferDocumentForm({
       </div>
 
       {state.error ? (
-        <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {state.error}
         </p>
       ) : null}
       {state.success ? (
-        <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
           {state.success}
         </p>
       ) : null}

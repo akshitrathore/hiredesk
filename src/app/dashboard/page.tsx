@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
+import { EmptyState } from "@/components/empty-state";
+import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { formatDate } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
@@ -117,58 +119,62 @@ export default async function DashboardPage({
   return (
     <AppShell>
       <section className="flex flex-col gap-6">
-        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-          <div>
-            <p className="text-sm font-medium text-muted">Pipeline</p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-              Candidate dashboard
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-              Track every candidate from resume intake to offer documents and
-              final decision.
-            </p>
-          </div>
+        <PageHeader
+          eyebrow="Pipeline"
+          title="Candidate dashboard"
+          description="Track every candidate from resume intake to offer documents and final decision."
+          action={
           <Link
             href="/candidates/new"
-            className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-white transition hover:bg-black"
+            className="inline-flex h-10 items-center justify-center rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-black"
           >
             + Add Candidate
           </Link>
-        </div>
+          }
+        />
 
         <div className="grid gap-3 md:grid-cols-3">
-          <div className="rounded-lg border border-line bg-panel p-4">
+          <div className="rounded-xl border border-line bg-panel p-5 shadow-sm">
             <p className="text-xs font-medium uppercase tracking-wide text-muted">
               Active candidates
             </p>
-            <p className="mt-3 text-3xl font-semibold">{data.activeCount}</p>
+            <p className="mt-3 text-3xl font-semibold tracking-tight">
+              {data.activeCount}
+            </p>
+            <p className="mt-1 text-xs text-muted">
+              Still moving through the pipeline
+            </p>
           </div>
-          <div className="rounded-lg border border-line bg-panel p-4">
+          <div className="rounded-xl border border-line bg-panel p-5 shadow-sm">
             <p className="text-xs font-medium uppercase tracking-wide text-muted">
               Interviews this week
             </p>
-            <p className="mt-3 text-3xl font-semibold">
+            <p className="mt-3 text-3xl font-semibold tracking-tight">
               {data.interviewsThisWeek}
             </p>
+            <p className="mt-1 text-xs text-muted">Scheduled from profiles</p>
           </div>
-          <div className="rounded-lg border border-line bg-panel p-4">
+          <div className="rounded-xl border border-line bg-panel p-5 shadow-sm">
             <p className="text-xs font-medium uppercase tracking-wide text-muted">
               Offers sent
             </p>
-            <p className="mt-3 text-3xl font-semibold">{data.offersSent}</p>
+            <p className="mt-3 text-3xl font-semibold tracking-tight">
+              {data.offersSent}
+            </p>
+            <p className="mt-1 text-xs text-muted">Documents generated</p>
           </div>
         </div>
 
-        <div className="rounded-lg border border-line bg-panel">
-          <form className="flex flex-col gap-3 border-b border-line p-4 md:flex-row">
+        <div className="overflow-hidden rounded-xl border border-line bg-panel shadow-sm">
+          <form className="flex flex-col gap-3 border-b border-line bg-panel p-4 md:flex-row">
             <input
-              className="h-10 flex-1 rounded-md border border-line bg-white px-3 text-sm outline-none transition placeholder:text-muted focus:border-foreground"
+              className="h-10 flex-1 rounded-lg border border-line bg-white px-3 text-sm outline-none transition placeholder:text-muted focus:border-foreground"
               defaultValue={q}
               name="q"
               placeholder="Search by candidate name or role"
             />
             <select
-              className="h-10 rounded-md border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
+              className="h-10 rounded-lg border border-line bg-white px-3 text-sm outline-none transition focus:border-foreground"
               defaultValue={status}
               name="status"
             >
@@ -180,48 +186,50 @@ export default async function DashboardPage({
               ))}
             </select>
             <button
-              className="h-10 rounded-md border border-line bg-background px-4 text-sm font-medium transition hover:border-foreground"
+              className="h-10 rounded-lg border border-line bg-background px-4 text-sm font-medium transition hover:border-foreground hover:bg-white"
               type="submit"
             >
               Filter
             </button>
           </form>
-          <div className="grid grid-cols-[1.3fr_1fr_1fr_1fr] border-b border-line px-4 py-3 text-xs font-medium uppercase tracking-wide text-muted">
-            <span>Name</span>
-            <span>Role</span>
-            <span>Status</span>
-            <span>Last activity</span>
-          </div>
           {data.error ? (
             <div className="px-4 py-6 text-sm text-red-700">{data.error}</div>
           ) : null}
           {data.candidates.length === 0 && !data.error ? (
-            <div className="px-4 py-14 text-center">
-              <h2 className="text-sm font-semibold">
-                {q || status ? "No matching candidates" : "No candidates yet"}
-              </h2>
-              <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted">
-                {q || status
+            <EmptyState
+              title={q || status ? "No matching candidates" : "No candidates yet"}
+              description={
+                q || status
                   ? "Try a different search or status filter."
-                  : "Add the first candidate after creating an open job. This table will become the HR team's home base."}
-              </p>
-            </div>
+                  : "Add the first candidate after creating an open job. This table will become the HR team's home base."
+              }
+            />
           ) : (
-            <div className="divide-y divide-line">
-              {data.candidates.map((candidate) => (
-                <Link
-                  className="grid grid-cols-[1.3fr_1fr_1fr_1fr] items-center px-4 py-4 text-sm transition hover:bg-background"
-                  href={`/candidates/${candidate.id}`}
-                  key={candidate.id}
-                >
-                  <span className="font-medium">{candidate.name}</span>
-                  <span className="text-muted">{candidate.jobTitle}</span>
-                  <StatusBadge status={candidate.status} />
-                  <span className="text-muted">
-                    {formatDate(candidate.last_activity_at)}
-                  </span>
-                </Link>
-              ))}
+            <div className="overflow-x-auto">
+              <div className="min-w-[760px]">
+                <div className="grid grid-cols-[1.3fr_1fr_1fr_1fr] border-b border-line bg-background/55 px-4 py-3 text-xs font-medium uppercase tracking-wide text-muted">
+                  <span>Name</span>
+                  <span>Role</span>
+                  <span>Status</span>
+                  <span>Last activity</span>
+                </div>
+                <div className="divide-y divide-line">
+                  {data.candidates.map((candidate) => (
+                    <Link
+                      className="grid grid-cols-[1.3fr_1fr_1fr_1fr] items-center px-4 py-4 text-sm transition hover:bg-background"
+                      href={`/candidates/${candidate.id}`}
+                      key={candidate.id}
+                    >
+                      <span className="font-medium">{candidate.name}</span>
+                      <span className="text-muted">{candidate.jobTitle}</span>
+                      <StatusBadge status={candidate.status} />
+                      <span className="text-muted">
+                        {formatDate(candidate.last_activity_at)}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
